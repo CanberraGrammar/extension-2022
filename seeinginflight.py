@@ -4,8 +4,19 @@ from cv2 import WND_PROP_TOPMOST
 import time
 from pyardrone import ARDrone
 
+# We'll be using signal interupt (SIGINT) as a safety mechanism
+import signal
+
 drone = ARDrone()
 drone.video_ready.wait()
+
+# Set up SISGINT handler
+def interruptHandler(signum, frame):
+  drone.land()
+  time.sleep(5)
+  drone.close()
+ 
+signal.signal(signal.SIGINT, interruptHandler)
 
 print(cv2.data.haarcascades)
 
